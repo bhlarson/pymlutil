@@ -26,7 +26,6 @@ def parse_arguments():
     parser.add_argument('-config', type=str, default='config/build.yaml', help='Configuration file')
     parser.add_argument('-password', type=str, default=None, help='Output path')
     parser.add_argument('--message', '-m', type=str, default=None, help='Version get message')
-    parser = argparse.ArgumentParser(description='Process arguments')
 
     args = parser.parse_args()
     return args
