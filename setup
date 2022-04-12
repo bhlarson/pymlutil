@@ -76,7 +76,7 @@ def Archive(args):
         print ('Failed to create tag result={}. Aborting'.format(result))
         return result
     
-    return result
+    return result, config, version_str
 
 def main(args):
     initial = datetime.now()
