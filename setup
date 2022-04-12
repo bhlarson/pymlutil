@@ -25,7 +25,8 @@ def parse_arguments():
     parser.add_argument('-credentails', type=str, default='creds.yaml', help='Credentials file.')
     parser.add_argument('-config', type=str, default='config/build.yaml', help='Configuration file')
     parser.add_argument('-password', type=str, default=None, help='Output path')
-    parser.add_argument('-timeout', type=str, default='2m0s', help='Version number')
+    parser.add_argument('--description', '-d', type=str, default=None, help='Version description')
+    parser = argparse.ArgumentParser(description='Process arguments')
 
     args = parser.parse_args()
     return args
@@ -67,7 +68,7 @@ def Archive(args):
         return result, config, version_str
     
     if args.description is None:
-        description = "Machine learning workflow version {}".format(args.version)
+        description = "pymlutil version {}".format(args.version)
     else:
         description = args.description
     cmdstr = 'git tag -a {} -m "{}"'.format(args.version,description )
