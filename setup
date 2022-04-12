@@ -66,11 +66,11 @@ def Archive(args):
         print ('Changes in working tree.  Please commit before creating a versioned repository.  Run "git status" for more information.')
         return result, config, version_str
     
-    if args.description is None:
-        description = "pymlutil version {}".format(args.version)
+    if args.message is None:
+        description = "pymlutil version {}".format(version_str)
     else:
         description = args.description
-    cmdstr = 'git tag -a {} -m "{}"'.format(args.version,description )
+    cmdstr = 'git tag -a {} -m "{}"'.format(version_str,description )
     result = cmd(cmdstr)
     if result != 0:
         print ('Failed to create tag result={}. Aborting'.format(result))
