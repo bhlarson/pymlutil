@@ -12,12 +12,12 @@ import argparse
 import time
 from datetime import datetime
 from zipfile import ZipFile
-from pymlutil.jsonutil import ReadDict
+from pymlutil.jsonutil import ReadDict, WriteDict
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Process arguments')
 
-    parser.add_argument('-debug', action='store_true',help='Wait for debuggee attach')   
+    parser.add_argument('--debug','-d', action='store_true',help='Wait for debuggee attach')   
     parser.add_argument('-debug_port', type=int, default=3300, help='Debug port')
     parser.add_argument('-debug_listen', type=str, default='0.0.0.0', help='Default, accept any client')
 
@@ -42,6 +42,8 @@ def main(args):
 
     creds = ReadDict(args.credentails)
     config = ReadDict(args.config)
+    config['version'] += 1
+    WriteDict(config, args.config)
     print("Create pymlutil version: {}".format(config['version']))
 
     pwd = os.getcwd()
