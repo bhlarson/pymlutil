@@ -38,14 +38,33 @@ def cmd(command):
     print('Complete {}s: {}={}'.format(dt, result, command))
     return result
 
-def Archive(args):
+def Archive(args, version_str):
     result = 0
+
+    config = ReadDict(args.config)
+    config['version']['patch'] += 1
+
+    version_str = '{}.{}.{}'.format(config['version']['major'], config['version']['minor'], config['version']['patch'])
+    if config['version']['label'] is not None and len(config['version']['label']) > 0:
+        version_str += '-{}'.format(config['version']['label'])
+
+    WriteDict(config, args.config)
+
+    cmdstr = 'git add {}'.format(args.config)
+    result = cmd(cmdstr)
+    if result != 0:
+        return result
+
+    cmdstr = 'git commit -m "Tag version {}"'.format(version_str)
+    result = cmd(cmdstr)
+    if result != 0:
+        return result
 
     cmdstr = 'git diff-index --quiet HEAD --;'
     result = cmd(cmdstr)
     if result != 0:
         print ('Changes in working tree.  Please commit before creating a versioned repository.  Run "git status" for more information.')
-        return result
+        return result, config, version_str
     
     if args.description is None:
         description = "Machine learning workflow version {}".format(args.version)
@@ -63,29 +82,12 @@ def main(args):
     initial = datetime.now()
 
     creds = ReadDict(args.credentails)
-    config = ReadDict(args.config)
-    config['version']['patch'] += 1
 
-    version_str = '{}.{}.{}'.format(config['version']['major'], config['version']['minor'], config['version']['patch'])
-    if config['version']['label'] is not None and len(config['version']['label']) > 0:
-        version_str += '-{}'.format(config['version']['label'])
-
-    WriteDict(config, args.config)
-    print("Create pymlutil version: {}".format(version_str))
-
-    cmdstr = 'git add {}'.format(args.config)
-    result = cmd(cmdstr)
-    if result != 0:
-        return result
-
-    cmdstr = 'git commit -m "Tag version {}"'.format(version_str)
-    result = cmd(cmdstr)
-    if result != 0:
-        return result
-
-    result = Archive(args)
+    result, config, version_str = Archive(args)
     if result:
         return result
+
+    print("Create pymlutil version: {}".format(version_str))
 
     pwd = os.getcwd()
 
@@ -104,7 +106,7 @@ def main(args):
         cmdstr = "pip3 install --upgrade pymlutil"
         result = cmd(cmdstr)
         from pymlutil.version import __version__
-        if __version__==config['version']:
+        if __version__==version_str:
             loaded_version = True
 
     dt = (datetime.now()-initial).total_seconds()
