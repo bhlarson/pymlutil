@@ -96,9 +96,13 @@ def main(args):
 
     cmdstr = "python3 setup.py sdist bdist_wheel"
     result = cmd(cmdstr)
+    if result:
+        return result
 
     cmdstr = "twine upload dist/* -u {} -p {}".format(creds['pipy.org']['username'], creds['pipy.org']['password'])
     result = cmd(cmdstr)
+    if result:
+        return result
 
     loaded_version = False
     while not loaded_version:
