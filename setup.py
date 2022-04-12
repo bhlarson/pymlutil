@@ -2,6 +2,13 @@ import shutil
 import yaml
 from setuptools import setup, find_packages
 
+def VersionString(config):
+    version_str = '{}.{}.{}'.format(config['version']['major'], config['version']['minor'], config['version']['patch'])
+    if config['version']['label'] is not None and len(config['version']['label']) > 0:
+        version_str += '-{}'.format(config['version']['label'])
+
+    return version_str
+
 def ReadDictYaml(filepath):
     yamldict = {}
     try:
@@ -17,7 +24,7 @@ buildconfig = 'config/build.yaml'
 config = ReadDictYaml(buildconfig)
 print(config)
 
-version_str = '{}.{}.{}'.format(config['version']['major'], config['version']['minor'], config['version']['patch'])
+version_str = VersionString(config)
 
 from pathlib import Path
 this_directory = Path(__file__).parent
