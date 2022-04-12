@@ -38,7 +38,7 @@ def cmd(command):
     print('Complete {}s: {}={}'.format(dt, result, command))
     return result
 
-def Archive(args):
+def Archive(args, version_str):
     result = 0
 
     cmdstr = 'git diff-index --quiet HEAD --;'
@@ -72,6 +72,16 @@ def main(args):
 
     WriteDict(config, args.config)
     print("Create pymlutil version: {}".format(version_str))
+
+    cmdstr = 'git add {}'.format(args.config)
+    result = cmd(cmdstr)
+    if result != 0:
+        return result
+
+    cmdstr = 'git commit -m "Tag version {}"'.format(version_str)
+    result = cmd(cmdstr)
+    if result != 0:
+        return result
 
     result = Archive(args)
     if result:
