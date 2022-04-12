@@ -38,7 +38,7 @@ def cmd(command):
     print('Complete {}s: {}={}'.format(dt, result, command))
     return result
 
-def Archive(args, version_str):
+def Archive(args):
     result = 0
 
     cmdstr = 'git diff-index --quiet HEAD --;'
