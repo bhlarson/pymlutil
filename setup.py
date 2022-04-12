@@ -17,7 +17,7 @@ buildconfig = 'config/build.yaml'
 config = ReadDictYaml(buildconfig)
 print(config)
 
-DESCRIPTION = 'Python Machine Learning Utilities'
+version_str = '{}.{}.{}'.format(config['version']['major'], config['version']['minor'], config['version']['patch'])
 
 from pathlib import Path
 this_directory = Path(__file__).parent
@@ -30,7 +30,7 @@ setup(
     version=config['version'],
     author="Brad Larson",
     author_email="<bhlarson@gmail.com>",
-    description=DESCRIPTION,
+    description=config['description'],
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=find_packages(),
