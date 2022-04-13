@@ -24,7 +24,7 @@ def parse_arguments():
     parser.add_argument('-debug_listen', type=str, default='0.0.0.0', help='Default, accept any client')
 
     parser.add_argument('-credentails', type=str, default='creds.yaml', help='Credentials file.')
-    parser.add_argument('-config', type=str, default='config/build.yaml', help='Configuration file')
+    parser.add_argument('-config', type=str, default='pymlutil/build.yaml', help='Configuration file')
     parser.add_argument('-password', type=str, default=None, help='Output path')
     parser.add_argument('--message', '-m', type=str, default=None, help='Version get message')
 
@@ -69,6 +69,14 @@ def Archive(args, config):
     result = cmd(cmdstr)
     if result != 0:
         print ('Failed to create tag result={}. Aborting'.format(result))
+        return result, config, version_str
+
+    cmdstr = 'git push origin {}'.format(version_str)
+    result = cmd(cmdstr)
+        return result, config, version_str
+
+    cmdstr = 'git push'
+    result = cmd(cmdstr)
         return result, config, version_str
     
     return result, config, version_str
