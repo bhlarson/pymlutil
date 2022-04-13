@@ -31,13 +31,13 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-def cmd(command):
+def cmd(command, check=False):
     print('$ '+command)
     initial = datetime.now()
-    result = subprocess.call(command, shell=True)
+    result = subprocess.run(command, shell=True, capture_output=True, check=check)
     dt = (datetime.now()-initial).total_seconds()
     print('Complete {}s: {}={}'.format(dt, result, command))
-    return result
+    return result.returncode, result.stderr
 
 def Archive(args, config):
     result = 0
@@ -46,14 +46,10 @@ def Archive(args, config):
     WriteDict(config, args.config)
 
     cmdstr = 'git add {}'.format(args.config)
-    result = cmd(cmdstr)
-    if result != 0:
-        return result, config, version_str
+    cmd(cmdstr, check=True)
 
     cmdstr = 'git commit -m "Tag version {}"'.format(version_str)
-    result = cmd(cmdstr)
-    if result != 0:
-        return result, config, version_str
+    cmd(cmdstr, check=True)
 
     cmdstr = 'git diff-index --quiet HEAD --;'
     result = cmd(cmdstr)
@@ -66,20 +62,13 @@ def Archive(args, config):
     else:
         description = args.description
     cmdstr = 'git tag -a {} -m "{}"'.format(version_str,description )
-    result = cmd(cmdstr)
-    if result != 0:
-        print ('Failed to create tag result={}. Aborting'.format(result))
-        return result, config, version_str
+    cmd(cmdstr, check=True)
 
     cmdstr = 'git push origin {}'.format(version_str)
-    result = cmd(cmdstr)
-    if result != 0:
-        return result, config, version_str
+    cmd(cmdstr, check=True)
 
     cmdstr = 'git push'
-    result = cmd(cmdstr)
-    if result != 0:
-        return result, config, version_str
+    cmd(cmdstr, check=True)
     
     return result, config, version_str
 
@@ -117,8 +106,8 @@ def main(args):
         result = cmd(cmdstr)
 
         cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)"'
-        loaded_version = cmd(cmdstr)
-        if loaded_version==version_str:
+        result, loaded_version = cmd(cmdstr)
+        if loaded_version.Replace("\n", "")==version_str:
             is_new_version_loaded = True
 
     dt = (datetime.now()-initial).total_seconds()
