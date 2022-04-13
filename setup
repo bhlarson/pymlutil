@@ -90,10 +90,10 @@ def main(args):
     os.mkdir('dist/')
 
     cmdstr = "python3 setup.py sdist bdist_wheel"
-    result = cmd(cmdstr, check=True)
+    cmd(cmdstr, check=True)
 
     cmdstr = "twine upload dist/* -u {} -p {}".format(creds['pipy.org']['username'], creds['pipy.org']['password'])
-    result = cmd(cmdstr, check=True)
+    cmd(cmdstr, check=True)
 
     is_new_version_loaded = False
     while not is_new_version_loaded:
@@ -103,7 +103,8 @@ def main(args):
 
         cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)"'
         result, loaded_version, _ = cmd(cmdstr)
-        if loaded_version.Replace("\n", "")==version_str:
+        loaded_str = loaded_version.decode("utf-8").replace("\n", "")
+        if loaded_str==version_str:
             is_new_version_loaded = True
 
     dt = (datetime.now()-initial).total_seconds()
