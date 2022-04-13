@@ -37,7 +37,7 @@ def cmd(command, check=False):
     result = subprocess.run(command, shell=True, capture_output=True, check=check)
     dt = (datetime.now()-initial).total_seconds()
     print('Complete {}s: {}={}'.format(dt, result, command))
-    return result.returncode, result.stderr
+    return result.stderr, result.returncode
 
 def Archive(args, config):
     result = 0
@@ -106,7 +106,7 @@ def main(args):
         result = cmd(cmdstr)
 
         cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)"'
-        result, loaded_version = cmd(cmdstr)
+        loaded_version, result = cmd(cmdstr)
         if loaded_version.Replace("\n", "")==version_str:
             is_new_version_loaded = True
 
