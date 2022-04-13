@@ -110,14 +110,16 @@ def main(args):
     if result:
         return result
 
-    loaded_version = False
-    while not loaded_version:
+    is_new_version_loaded = False
+    while not is_new_version_loaded:
         time.sleep(5)
         cmdstr = "pip3 install --upgrade pymlutil"
         result = cmd(cmdstr)
-        from pymlutil.version import __version__
-        if __version__==version_str:
-            loaded_version = True
+
+        cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)'
+        loaded_version = cmd(cmdstr)
+        if loaded_version==version_str:
+            is_new_version_loaded = True
 
     dt = (datetime.now()-initial).total_seconds()
     print("Setup version {} complete {}s".format(config['version'], dt))
