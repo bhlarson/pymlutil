@@ -73,10 +73,12 @@ def Archive(args, config):
 
     cmdstr = 'git push origin {}'.format(version_str)
     result = cmd(cmdstr)
+    if result != 0:
         return result, config, version_str
 
     cmdstr = 'git push'
     result = cmd(cmdstr)
+    if result != 0:
         return result, config, version_str
     
     return result, config, version_str
