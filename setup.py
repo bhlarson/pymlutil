@@ -1,13 +1,9 @@
+import os, sys
 import shutil
 import yaml
 from setuptools import setup, find_packages
+from pymlutil.version import config, VersionString
 
-def VersionString(config):
-    version_str = '{}.{}.{}'.format(config['version']['major'], config['version']['minor'], config['version']['patch'])
-    if config['version']['label'] is not None and len(config['version']['label']) > 0:
-        version_str += '-{}'.format(config['version']['label'])
-
-    return version_str
 
 def ReadDictYaml(filepath):
     yamldict = {}
@@ -19,10 +15,6 @@ def ReadDictYaml(filepath):
     except ValueError:
         print('Failed to load {} error {}'.format(filepath, ValueError))
     return yamldict
-
-buildconfig = 'config/build.yaml'
-config = ReadDictYaml(buildconfig)
-print(config)
 
 version_str = VersionString(config)
 
