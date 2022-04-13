@@ -2,8 +2,8 @@ import torch
 import math
 import numpy as np
 
-def GaussianBasis(i, zero=0.0, sigma=0.33):
-    return torch.exp(-1*torch.square((i-zero)/(2*sigma))) # torch.square not supported by torch.onnx
+def GaussianBasis(x, zero=0.0, sigma=0.33):
+    return torch.exp(-1*torch.square((x-zero)/(2*sigma*sigma))) # torch.square not supported by torch.onnx
 
 def NormGausBasis(len, i, depth, r=1.0):
         den = 0.0
@@ -14,10 +14,6 @@ def NormGausBasis(len, i, depth, r=1.0):
                 num=bias
             den = den + bias
         return num/den
-
-def SigmoidScale(step, sigmoid_scale = 5, exp_scale = 0.1, maxscale=500):
-    kSigmoid = sigmoid_scale+math.exp(exp_scale*step)
-    return min(kSigmoid, maxscale)
 
 # Exponential function from vertex and point
 class Exponential():

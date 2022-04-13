@@ -2,20 +2,40 @@
 Python Machine Learning utilities:
 
 ## functions
+### GaussianBasis
+Computes a unit height gaussian bell curve function  \
+$ GaussianBasis(x, zero, sigma) = e^{-\frac{(x-zero)^2}{2*sigma^2}} $ \
+- x : function input
+- zero : location of the peak center
+- sigma: curve with or standard deviation
 
-## imutial
+```python
+def GaussianBasis(x, zero=0.0, sigma=0.33)
+```
 
-## jsonutil
+Example:
+```python
+x = np.arange(-2.0, 2.0, 0.01) 
+y = GaussianBasis(torch.tensor(x))
+plt.plot(x, y)
+plt.show()
+```
+![gaussian_bias](./img/gaussian_bias.png)
 
-## metrics
 
-## s3
+### imutial
 
-## torch_util
+### jsonutil
 
-## version
+### metrics
 
-## workflow
+### s3
+
+### torch_util
+
+### version
+
+### workflow
 
 
 [Packaging Python Projects](https://www.freecodecamp.org/news/build-your-first-python-package/)
