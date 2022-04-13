@@ -116,7 +116,7 @@ def main(args):
         cmdstr = "pip3 install --upgrade pymlutil"
         result = cmd(cmdstr)
 
-        cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)'
+        cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)"'
         loaded_version = cmd(cmdstr)
         if loaded_version==version_str:
             is_new_version_loaded = True
