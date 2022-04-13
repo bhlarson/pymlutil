@@ -14,7 +14,7 @@ from zipfile import ZipFile
 
 from sympy import re
 from pymlutil.jsonutil import ReadDict, WriteDict
-from pymlutil.version import config, VersionString
+from pymlutil.version import VersionString
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Process arguments')
@@ -39,9 +39,9 @@ def cmd(command):
     print('Complete {}s: {}={}'.format(dt, result, command))
     return result
 
-def Archive(args):
+def Archive(args, config):
     result = 0
-
+    config['version']['patch'] += 1
     version_str = VersionString(config)
     WriteDict(config, args.config)
 
@@ -77,8 +77,9 @@ def main(args):
     initial = datetime.now()
 
     creds = ReadDict(args.credentails)
+    config = ReadDict(args.config)
 
-    result, config, version_str = Archive(args)
+    result, config, version_str = Archive(args, config)
     if result:
         return result
 
