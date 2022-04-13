@@ -34,7 +34,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     # the name must match the folder name 'pymlutil'
     name="pymlutil", 
-    version=config['version'],
+    version=version_str,
     author="Brad Larson",
     author_email="<bhlarson@gmail.com>",
     description=config['description'],
