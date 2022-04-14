@@ -58,8 +58,8 @@ class ImUtil():
         im = cv2.hconcat([iman, imseg])
         return im
 
-class ImDatasetUtils():
-    def __init__(self, s3, bucket, dataset_desc, class_dictionary, 
+class ImTransform():
+    def __init__(self, 
         height=640, 
         width=640, 
         normalize=True, 
@@ -70,7 +70,9 @@ class ImDatasetUtils():
         scale_min=0.75, 
         scale_max=1.25, 
         offset=0.1,
-        astype='float32'
+        astype='float32',
+        borderType=cv2.BORDER_CONSTANT,
+        borderValue=0
     ):
         self.height = height
         self.width = width
@@ -84,11 +86,13 @@ class ImDatasetUtils():
         self.scale_max = scale_max
         self.offset = offset
         self.astype = astype
+        self.borderType = borderType
+        self.borderValue = borderValue
 
 
 
     # Expect img.shape[0]==ann.shape[0] and ann.shape[0]==ann.shape[0]
-    def random_resize_crop_or_pad(self, img, ann, target_height, target_width, borderType=cv2.BORDER_CONSTANT, borderValue=0):
+    def random_resize_crop_or_pad(self, img, ann, target_height, target_width):
         imgMean = None
         imgStd = None
         imgtype = img.dtype.name
@@ -124,8 +128,8 @@ class ImDatasetUtils():
             pad = True
 
         if pad:
-            img = cv2.copyMakeBorder(img, top, bottom, left, right, borderType, None, borderValue)
-            ann = cv2.copyMakeBorder(ann, top, bottom, left, right, borderType, None, borderValue)
+            img = cv2.copyMakeBorder(img, top, bottom, left, right, self.borderType, None, self.borderValue)
+            ann = cv2.copyMakeBorder(ann, top, bottom, left, right, self.borderType, None, self.borderValue)
 
         # Transform
         if self.enable_transform:
