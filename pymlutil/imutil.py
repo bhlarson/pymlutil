@@ -92,7 +92,7 @@ class ImTransform():
 
 
     # Expect img.shape[0]==ann.shape[0] and ann.shape[0]==ann.shape[0]
-    def random_resize_crop_or_pad(self, img, ann, target_height, target_width):
+    def random_resize_crop_or_pad(self, img, ann):
         imgMean = None
         imgStd = None
         imgtype = img.dtype.name
@@ -118,13 +118,13 @@ class ImTransform():
         bottom=0
         left=0
         right=0
-        if target_height > height:
-            bottom = int((target_height-height)/2)
-            top = target_height-height-bottom
+        if self.height > height:
+            bottom = int((self.height-height)/2)
+            top = self.height-height-bottom
             pad = True
-        if target_width > width:
-            right = int((target_width-width)/2)
-            left = target_width-width-right
+        if self.width > width:
+            right = int((self.width-width)/2)
+            left = self.width-width-right
             pad = True
 
         if pad:
@@ -161,8 +161,8 @@ class ImTransform():
         # Crop
         height = img.shape[0]
         width = img.shape[1]
-        maxX = width - target_width
-        maxY = height - target_height
+        maxX = width - self.width
+        maxY = height - self.height
 
         crop = False
         startX = 0
@@ -175,7 +175,7 @@ class ImTransform():
             crop = True
         if crop:
 
-            img = img[startY:startY+target_height, startX:startX+target_width]
-            ann = ann[startY:startY+target_height, startX:startX+target_width]
+            img = img[startY:startY+self.height, startX:startX+self.width]
+            ann = ann[startY:startY+self.height, startX:startX+self.width]
 
         return img, ann, imgMean, imgStd
