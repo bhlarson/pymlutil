@@ -40,7 +40,7 @@ class ImUtil():
         if self.class_dictionary is not None:
             ann = self.ColorizeAnnotation(ann)
 
-        if(self.isGrayscale(self.dataset_desc['image_colorspace'])):
+        if('image_colorspace' in self.dataset_desc and self.isGrayscale(self.dataset_desc['image_colorspace'])):
             img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
 
         img = (img*ann).astype(np.uint8)
