@@ -13,9 +13,10 @@ class ImUtil():
         self.CreateLut()
 
     def isGrayscale(self):
-        color_str = self.dataset_desc['image_colorspace']
-        if color_str.lower() == 'grayscale':
-            return True
+        if 'image_colorspace' in self.dataset_desc:
+            color_str = self.dataset_desc['image_colorspace']
+            if color_str.lower() == 'grayscale':
+                return True
         return False
 
     def CreateLut(self):
@@ -40,7 +41,7 @@ class ImUtil():
         if self.class_dictionary is not None:
             ann = self.ColorizeAnnotation(ann)
 
-        if('image_colorspace' in self.dataset_desc and self.isGrayscale(self.dataset_desc['image_colorspace'])):
+        if self.isGrayscale():
             img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
 
         img = (img*ann).astype(np.uint8)
