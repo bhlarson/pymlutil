@@ -109,7 +109,7 @@ def main(args):
         cmd(cmdstr)
 
         cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)"'
-        _, loaded_version, _ = cmd(cmdstr)
+        _, loaded_version, _ = cmd(cmdstr, check=False)
         loaded_str = loaded_version.decode("utf-8").replace("\n", "")
         if loaded_str==version_str:
             is_new_version_loaded = True
