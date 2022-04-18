@@ -13,7 +13,7 @@ from datetime import datetime
 from zipfile import ZipFile
 from sqlalchemy import false
 
-from sympy import re
+from sympy import arg, re
 from pymlutil.jsonutil import ReadDict, WriteDict
 from pymlutil.version import VersionString
 
@@ -28,6 +28,7 @@ def parse_arguments():
     parser.add_argument('-config', type=str, default='pymlutil/build.yaml', help='Configuration file')
     parser.add_argument('-password', type=str, default=None, help='Output path')
     parser.add_argument('--message', '-m', type=str, default=None, help='Version get message')
+    parser.add_argument('--test', '-t', action='store_true', help='Test deploy')
 
     args = parser.parse_args()
     return args
@@ -53,10 +54,12 @@ def Archive(args, config):
     cmd(cmdstr)
 
     cmdstr = 'git diff-index --quiet HEAD --;'
-    result, stderr, stdout = cmd(cmdstr, check=false)
-    if result != 0:
+    result, stderr, stdout = cmd(cmdstr, check=False)
+    if result != 0 and not args.test:
         print ('Changes in working tree.  Please commit before creating a versioned repository.  Run "git status" for more information.')
         return result, config, version_str
+    else:
+        result=0
     
     if args.message is None:
         description = "pymlutil version {}".format(version_str)
