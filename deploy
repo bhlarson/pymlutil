@@ -78,6 +78,9 @@ def main(args):
     creds = ReadDict(args.credentails)
     config = ReadDict(args.config)
 
+    cmdstr = "python3 -m unittest discover"
+    cmd(cmdstr)
+
     result, config, version_str = Archive(args, config)
     if result:
         return result
