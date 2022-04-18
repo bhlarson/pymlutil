@@ -11,6 +11,7 @@ import argparse
 import time
 from datetime import datetime
 from zipfile import ZipFile
+from sqlalchemy import false
 
 from sympy import re
 from pymlutil.jsonutil import ReadDict, WriteDict
@@ -31,7 +32,7 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-def cmd(command, check=False):
+def cmd(command, check=True):
     print('$ '+command)
     initial = datetime.now()
     result = subprocess.run(command, shell=True, capture_output=True, check=check)
@@ -46,13 +47,13 @@ def Archive(args, config):
     WriteDict(config, args.config)
 
     cmdstr = 'git add {}'.format(args.config)
-    cmd(cmdstr, check=True)
+    cmd(cmdstr)
 
     cmdstr = 'git commit -m "Tag version {}"'.format(version_str)
-    cmd(cmdstr, check=True)
+    cmd(cmdstr)
 
     cmdstr = 'git diff-index --quiet HEAD --;'
-    result, stderr, stdout = cmd(cmdstr)
+    result, stderr, stdout = cmd(cmdstr, check=false)
     if result != 0:
         print ('Changes in working tree.  Please commit before creating a versioned repository.  Run "git status" for more information.')
         return result, config, version_str
@@ -62,13 +63,13 @@ def Archive(args, config):
     else:
         description = args.description
     cmdstr = 'git tag -a {} -m "{}"'.format(version_str,description )
-    cmd(cmdstr, check=True)
+    cmd(cmdstr)
 
     cmdstr = 'git push origin {}'.format(version_str)
-    cmd(cmdstr, check=True)
+    cmd(cmdstr)
 
     cmdstr = 'git push'
-    cmd(cmdstr, check=True)
+    cmd(cmdstre)
     
     return result, config, version_str
 
@@ -93,16 +94,16 @@ def main(args):
     os.mkdir('dist/')
 
     cmdstr = "python3 setup.py sdist bdist_wheel"
-    cmd(cmdstr, check=True)
+    cmd(cmdstr)
 
     cmdstr = "twine upload dist/* -u {} -p {}".format(creds['pipy.org']['username'], creds['pipy.org']['password'])
-    cmd(cmdstr, check=True)
+    cmd(cmdstr)
 
     is_new_version_loaded = False
     while not is_new_version_loaded:
         time.sleep(5)
         cmdstr = "pip3 install --upgrade pymlutil"
-        cmd(cmdstr, check=True)
+        cmd(cmdstr)
 
         cmdstr = 'python3 -c "import sys; from pymlutil.version import __version__; sys.exit(__version__)"'
         _, loaded_version, _ = cmd(cmdstr)
