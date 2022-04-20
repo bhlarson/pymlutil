@@ -25,7 +25,7 @@ class ImUtil():
             self.lut[obj['trainId']][0] = obj['color'][2]
             self.lut[obj['trainId']][1] = obj['color'][1]
             self.lut[obj['trainId']][2] = obj['color'][0]
-        self.lut = self.lut.astype(np.float) * 1/255. # scale colors 0-1
+        self.lut = self.lut.astype(float) * 1/255. # scale colors 0-1
         self.lut[self.class_dictionary ['background']] = [1.0,1.0,1.0] # Pass Through
 
     # Display functions
