@@ -16,9 +16,10 @@ def parse_arguments():
 
 
     parser.add_argument('--PutDir', '-p', action='store_true',help='Get coco dataset') 
-    parser.add_argument('--source', type=str, default=None, help='path to source directory')
-    parser.add_argument('--dest', type=str, default=None, help='destindation in s3')
-    parser.add_argument('--set', type=str, default='dataset', help='set defined in credentials file')
+    parser.add_argument('-src', type=str, default=None, help='path to source directory')
+    parser.add_argument('-set', type=str, default='dataset', help='set defined in credentials file')
+    parser.add_argument('-dest', type=str, default=None, help='destindation in s3')
+
     parser.add_argument('-cocourl', type=json.loads, default=None, 
                         help='List of coco dataset URLs to load.  If none, coco 2017 datafiles are loaded from https://cocodataset.org/#download')
 
@@ -37,7 +38,8 @@ def main(args):
         elif args.dest is None:
             print('PutDir failed: args.dest is None')
         else:
-            s3.PutDir(s3def['sets'][args.set]['bucket'], args.source, args.dest)
+            dest = '{}/{}'.format(s3def['sets'][args.set]['prefix']/ args.dest)
+            s3.PutDir(s3def['sets'][args.set]['bucket'], args.source, dest)
 
 
     print('pymluitil complete')
