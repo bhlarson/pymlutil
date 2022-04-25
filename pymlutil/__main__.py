@@ -38,8 +38,8 @@ def main(args):
         elif args.dest is None:
             print('PutDir failed: args.dest is None')
         else:
-            dest = '{}/{}'.format(s3def['sets'][args.set]['prefix']/ args.dest)
-            s3.PutDir(s3def['sets'][args.set]['bucket'], args.source, dest)
+            dest = '{}/{}'.format(s3def['sets'][args.set]['prefix'], args.dest)
+            s3.PutDir(s3def['sets'][args.set]['bucket'], args.src, dest)
 
 
     print('pymluitil complete')
