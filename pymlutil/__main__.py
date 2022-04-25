@@ -33,8 +33,8 @@ def main(args):
     if args.PutDir:
         if args.set not in s3def['sets']:
             print('PutDir failed: args.set {} not found in credentials file'.format(args.set))
-        elif args.source is None:
-            print('PutDir failed: args.source is None')
+        elif args.src is None:
+            print('PutDir failed: args.src is None')
         elif args.dest is None:
             print('PutDir failed: args.dest is None')
         else:
