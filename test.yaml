@@ -1,0 +1,5 @@
+s3:
+  credentials: creds.yaml
+  sourcepath: tests/testimages
+  testset: test
+  objectpath: testimages

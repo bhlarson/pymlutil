@@ -14,23 +14,25 @@ def parse_arguments():
 
     parser.add_argument('-credentials', type=str, default='creds.yaml', help='Credentials file.')
 
+    parser.add_argument('-src', type=str, default=None, help='source path')
+    parser.add_argument('-dest', type=str, default=None, help='destindation path')
 
-    parser.add_argument('--PutDir', '-p', action='store_true',help='Get coco dataset') 
-    parser.add_argument('-src', type=str, default=None, help='path to source directory')
+    parser.add_argument('--PutDir', '-p', action='store_true',help='Put directory in S3') 
     parser.add_argument('-set', type=str, default='dataset', help='set defined in credentials file')
-    parser.add_argument('-dest', type=str, default=None, help='destindation in s3')
 
-    parser.add_argument('-cocourl', type=json.loads, default=None, 
-                        help='List of coco dataset URLs to load.  If none, coco 2017 datafiles are loaded from https://cocodataset.org/#download')
+    parser.add_argument('-clone, action='store_true',help=Cone objects from source to destination S3')
+    parser.add_argument('-srcS3', type=str, default=None, help='path to source directory')
+    parser.add_argument('-srcSet', type=str, default='dataset', help='set defined in credentials file')
+    parser.add_argument('-destS3', type=str, default=None, help='path to source directory')
+    parser.add_argument('-destSet', type=str, default='dataset', help='set defined in credentials file')
 
     args = parser.parse_args()
     return args
 
 def main(args):
 
-    s3, creds, s3def = Connect(args.credentials)
-
     if args.PutDir:
+        s3, creds, s3def = Connect(args.credentials)
         if args.set not in s3def['sets']:
             print('PutDir failed: args.set {} not found in credentials file'.format(args.set))
         elif args.src is None:
@@ -41,6 +43,23 @@ def main(args):
             dest = '{}/{}'.format(s3def['sets'][args.set]['prefix'], args.dest)
             s3.PutDir(s3def['sets'][args.set]['bucket'], args.src, dest)
 
+    if args.clone:
+        s3Src, _, s3SrcDef = Connect(args.credentials, s3_name=args.srcS3)
+        s3Dest, _, s3DestDef = Connect(args.credentials, s3_name=args.destS3)
+
+        srcSet = None
+        if args.srcSet in s3SrcDef['sets']:
+            srcSet = s3SrcDef['sets'][args.srcSet]
+        else:
+            raise ValueError('{} {} clone srcSet failure {}'.format(__file__, __name__, args.srcSet))
+
+        destSet = None
+        if args.destSet in s3DestDef['sets']:
+            destSet = s3DestDef['sets'][args.destSet]
+        else:
+            raise ValueError('{} {} clone destSet failure {}'.format(__file__, __name__, args.destSet))
+
+        s3Dest.CloneObjects(destSet['bucket'], args.src , s3Src, srcSet['bucket'], args.dest)
 
     print('pymluitil complete')
 

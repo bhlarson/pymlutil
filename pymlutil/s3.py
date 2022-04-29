@@ -126,37 +126,6 @@ class s3store:
 
         return success
 
-    def Mirror(self, bucket, setname, destdir):
-        success = True
-
-        try:
-            objects = self.s3.list_objects(bucket, prefix=setname, recursive=True)
-            fileCount = len(tuple(objects)) # Determine length for feedback during download
-            if(fileCount > 0):
-                objects = self.s3.list_objects(bucket, prefix=setname, recursive=True) # Recreate object to reset iteratorator to beginning
-                for obj in tqdm(objects, total=fileCount):
-                    try:
-                        objstr = remove_prefix(obj.object_name, setname)
-                        destination = '{}/{}'.format(destdir,objstr)
-                        if obj.is_dir:
-                            if not os.path.isdir(destination):
-                                os.mkdir(destination)
-                        else:
-                            if not os.path.isfile(destination):
-                                self.s3.fget_object(bucket, obj.object_name, destination)
-                    except:
-                        print('Failed to copy {}/{} to {}'.format(bucket, obj.object_name, destination))
-                        success = False
-
-        except Exception as err:
-            print(err)
-            raise err
-        except:
-            print('Failed to read {}/{}'.format(bucket, setname))
-            success = False
-
-        return success
-
     def ListObjects(self, bucket, setname=None, pattern='**', recursive=False):
         success = True
         files = []
@@ -372,32 +341,28 @@ class s3store:
 
         return checkpoints
 
-    def CloneObjects(self, destbucket, destsetname, srcS3, srcbucket, srcsetname):
+    def CloneObjects(self, destbucket, destsetname, srcS3, srcbucket, srcsetname, srcpattern='**', recursive=True):
         success = True
 
         # List all object paths in bucket that begin with my-prefixname.
         try:
-            objects = srcS3.list_objects(srcbucket, prefix=srcsetname, recursive=True)
-            fileCount = len(tuple(objects)) 
-            if(fileCount > 0):
-                objects = srcS3.list_objects(srcbucket, prefix=setname, recursive=True)
-                for obj in tqdm(objects, total=fileCount):
-                    try:
-                        destination = '{}/{}'.format(destsetname,remove_prefix(obj.object_name,srcsetname))
+            objects = srcS3.ListObjects(srcbucket, setname=srcsetname, pattern=srcpattern, recursive=recursive)
 
-                        srcobj = srcS3.GetObject(srcbucket, obj.object_name)
-                        self.PutObject(destbucket, destination, srcobj)
+            for obj in tqdm(objects):
+                try:
+                    destination = '{}{}'.format(destsetname,remove_prefix(obj,srcsetname))
 
-                        #if obj.is_dir:
-                        #    if not os.path.isdir(destination):
-                        #        os.mkdir(destination)
-                        #else:
-                        #    self.s3.fget_object(bucket, obj.object_name, destination)
-                    except:
-                        print('Failed to copy from {}/{} to {}/{}'.format(srcbucket,obj.object_name, destbucket, destination))
-                        success = False            
-            else:
-                print('{}/{} contains {} objects'.format(srcbucket, setname, fileCount))
+                    srcobj = srcS3.GetObject(srcbucket, obj)
+                    self.PutObject(destbucket, destination, srcobj)
+
+                    #if obj.is_dir:
+                    #    if not os.path.isdir(destination):
+                    #        os.mkdir(destination)
+                    #else:
+                    #    self.s3.fget_object(bucket, obj.object_name, destination)
+                except:
+                    print('Failed to copy from {}/{} to {}/{}'.format(srcbucket,obj.object_name, destbucket, destination))
+                    success = False            
 
         except Exception as err:
             print(err)
