@@ -20,7 +20,7 @@ def parse_arguments():
     parser.add_argument('--PutDir', '-p', action='store_true',help='Put directory in S3') 
     parser.add_argument('-set', type=str, default='dataset', help='set defined in credentials file')
 
-    parser.add_argument('-clone, action='store_true',help=Cone objects from source to destination S3')
+    parser.add_argument('-clone', action='store_true',help='Clone objects from source to destination S3')
     parser.add_argument('-srcS3', type=str, default=None, help='path to source directory')
     parser.add_argument('-srcSet', type=str, default='dataset', help='set defined in credentials file')
     parser.add_argument('-destS3', type=str, default=None, help='path to source directory')
