@@ -59,7 +59,7 @@ def main(args):
         else:
             raise ValueError('{} {} clone destSet failure {}'.format(__file__, __name__, args.destSet))
 
-        s3Dest.CloneObjects(destSet['bucket'], args.src , s3Src, srcSet['bucket'], args.dest)
+        s3Dest.CloneObjects(destSet['bucket'], args.dest , s3Src, srcSet['bucket'], args.src)
 
     print('pymluitil complete')
 

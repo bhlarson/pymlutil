@@ -1,5 +1,13 @@
 s3:
   credentials: creds.yaml
-  sourcepath: tests/testimages
+
+  srcS3: store
+  destS3: store
+  srcSet: test
+  destSet: test
+  src: ""
+  dest: lit
+
+  srcpath: tests/testimages
   testset: test
   objectpath: testimages

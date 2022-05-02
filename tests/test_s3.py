@@ -1,6 +1,5 @@
 import sys
 import os
-from pycocotools import mask
 import numpy as np
 import cv2
 import json
@@ -34,7 +33,7 @@ class Test(unittest.TestCase):
             destobjpath += '/'
         destobjpath += parameters['s3']['objectpath']
 
-        if not (s3.PutDir(set['bucket'], parameters['s3']['sourcepath'], destobjpath)):
+        if not (s3.PutDir(set['bucket'], parameters['s3']['srcpath'], destobjpath)):
              raise ValueError('{} {} failed'.format(__file__, __name__))
 
         #  RemoveObjects(self, bucket, setname=None, pattern='**', recursive=False):
@@ -47,6 +46,38 @@ class Test(unittest.TestCase):
         if 's3' not in parameters:
             raise ValueError('s3 not in {}'.format(test_config))
 
+        # s3Src, _, s3SrcDef = Connect(parameters['s3']['credentials'], s3_name=parameters['s3']['srcS3'])
+        # s3Dest, _, s3DestDef = Connect(parameters['s3']['credentials'], s3_name=parameters['s3']['destS3'])
+
+        # srcSet = None
+        # if parameters['s3']['srcSet'] in s3SrcDef['sets']:
+        #     srcSet = s3SrcDef['sets'][parameters['s3']['srcSet']]
+        # else:
+        #     raise ValueError('{} {} clone srcSet failure {}'.format(__file__, __name__, parameters['s3']['srcSet']))
+
+        # destSet = None
+        # if parameters['s3']['destSet'] in s3DestDef['sets']:
+        #     destSet = s3DestDef['sets'][parameters['s3']['destSet']]
+        # else:
+        #     raise ValueError('{} {} clone destSet failure {}'.format(__file__, __name__, parameters['s3']['destSet']))
+        # destpath = ''
+        # if type(destSet['prefix']) == str and len(destSet['prefix']) >= 0:
+        #     destpath = destSet['prefix']
+        # if type(parameters['s3']['dest']) == str and len(parameters['s3']['dest']) >= 0:
+        #     if len(destpath) > 0:
+        #         destpath += '/'
+        #     destpath += parameters['s3']['dest']
+
+        # srcpath = ''
+        # if type(srcSet['prefix']) == str and len(srcSet['prefix']) >= 0:
+        #     srcpath = srcSet['prefix']
+        # if type(parameters['s3']['src']) == str and len(parameters['s3']['src']) >= 0:
+        #     if len(srcpath) > 0:
+        #         srcpath += '/'
+        #     srcpath += parameters['s3']['src']
+
+        # s3Dest.CloneObjects(destSet['bucket'], destpath , s3Src, srcSet['bucket'], srcpath)
+        
         s3, _, s3def = Connect(parameters['s3']['credentials'])
 
         set = None
@@ -59,7 +90,7 @@ class Test(unittest.TestCase):
             srcobjepath += '/'
         srcobjepath += parameters['s3']['objectpath']
 
-        if not (s3.PutDir(set['bucket'], parameters['s3']['sourcepath'], srcobjepath)):
+        if not (s3.PutDir(set['bucket'], parameters['s3']['srcpath'], srcobjepath)):
             raise ValueError('{} {} PutDir failed'.format(__file__, __name__))
 
         destobjpath = set['prefix']
