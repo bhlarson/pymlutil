@@ -1,3 +1,4 @@
+from msilib import type_string
 import os
 import io
 import glob
@@ -350,7 +351,13 @@ class s3store:
 
             for obj in tqdm(objects):
                 try:
-                    destination = '{}{}'.format(destsetname,remove_prefix(obj,srcsetname))
+                    destination = destsetname
+                    if type(srcsetname) == str and len(srcsetname) > 0:
+                        destination += remove_prefix(obj,srcsetname)
+                    else:
+                        destination += '/'
+                        destination += obj
+ 
 
                     srcobj = srcS3.GetObject(srcbucket, obj)
                     self.PutObject(destbucket, destination, srcobj)
