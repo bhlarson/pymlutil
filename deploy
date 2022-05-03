@@ -19,10 +19,11 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Process arguments')
 
     parser.add_argument('--debug','-d', action='store_true',help='Wait for debuggee attach')   
-    parser.add_argument('-debug_port', type=int, default=300, help='Debug port')
+    parser.add_argument('-debug_port', type=int, default=3000, help='Debug port')
     parser.add_argument('-debug_listen', type=str, default='0.0.0.0', help='Default, accept any client')
 
     parser.add_argument('-credentails', type=str, default='creds.yaml', help='Credentials file.')
+    parser.add_argument('-package', type=str, default='pymlutil', help='Credentials key')
     parser.add_argument('-config', type=str, default='pymlutil/build.yaml', help='Configuration file')
     parser.add_argument('-password', type=str, default=None, help='Output path')
     parser.add_argument('--message', '-m', type=str, default=None, help='Version get message')
@@ -34,7 +35,7 @@ def parse_arguments():
 def cmd(command, check=True):
     print('$ '+command)
     initial = datetime.now()
-    result = subprocess.run(command, shell=True, check=check)
+    result = subprocess.run(command, shell=True, capture_output=True, check=check)
     dt = (datetime.now()-initial).total_seconds()
     print('Complete {}s: {}={}'.format(dt, result, command))
     return result.returncode, result.stderr, result.stdout
@@ -97,7 +98,9 @@ def main(args):
     cmdstr = "python3 setup.py sdist bdist_wheel"
     cmd(cmdstr)
 
-    cmdstr = "twine upload dist/* -u {} -p {}".format(creds['pipy.org']['username'], creds['pipy.org']['password'])
+    #cmdstr = "twine upload dist/* -u {} -p {}".format(creds['pypi.org']['username'], creds['pipy.org']['password'])
+    pipy_creds = next(filter(lambda d: d.get('package') == args.package, creds['pypi.org']), None)
+    cmdstr = "twine upload dist/* -u {} -p {}".format(pipy_creds['username'], pipy_creds['password'])
     cmd(cmdstr)
 
     is_new_version_loaded = False
