@@ -1,6 +1,5 @@
 import sys
 import os
-from pycocotools import mask
 import numpy as np
 import cv2
 import json

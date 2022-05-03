@@ -19,7 +19,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Process arguments')
 
     parser.add_argument('--debug','-d', action='store_true',help='Wait for debuggee attach')   
-    parser.add_argument('-debug_port', type=int, default=3300, help='Debug port')
+    parser.add_argument('-debug_port', type=int, default=300, help='Debug port')
     parser.add_argument('-debug_listen', type=str, default='0.0.0.0', help='Default, accept any client')
 
     parser.add_argument('-credentails', type=str, default='creds.yaml', help='Credentials file.')
@@ -34,7 +34,7 @@ def parse_arguments():
 def cmd(command, check=True):
     print('$ '+command)
     initial = datetime.now()
-    result = subprocess.run(command, shell=True, capture_output=True, check=check)
+    result = subprocess.run(command, shell=True, check=check)
     dt = (datetime.now()-initial).total_seconds()
     print('Complete {}s: {}={}'.format(dt, result, command))
     return result.returncode, result.stderr, result.stdout
