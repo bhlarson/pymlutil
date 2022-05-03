@@ -1,4 +1,3 @@
-from msilib import type_string
 import os
 import io
 import glob
