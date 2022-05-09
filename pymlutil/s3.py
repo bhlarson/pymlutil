@@ -73,8 +73,9 @@ class s3store:
                 path = path +'/'
             for file in tqdm(files, total=len(files)):
                 # Create object directory structure
-                object_name = setname+ remove_prefix(str(file), str(Path(path)))
-                self.s3.fput_object(bucket, object_name.lstrip('/'), str(file))
+                if file.is_file():
+                    object_name = setname+ remove_prefix(str(file), str(Path(path)))
+                    self.s3.fput_object(bucket, object_name.lstrip('/'), str(file))
         except Exception as err:
             print(err)
             success = False
