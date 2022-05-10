@@ -71,7 +71,7 @@ class s3store:
             self.MakeBucket(bucket)
             if path[len(path)-1] != '/':
                 path = path +'/'
-            for file in tqdm(files, total=len(files)):
+            for file in tqdm(files, total=len(files), desc="PutDir"):
                 # Create object directory structure
                 if file.is_file():
                     object_name = setname+ remove_prefix(str(file), str(Path(path)))
