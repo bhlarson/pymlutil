@@ -73,3 +73,5 @@ from pymlutil import *
 ```
 
 ## Notes
+[Packaging and Distributing Python Projects](https://indico.in2p3.fr/event/20306/contributions/96819/attachments/64768/89975/packaging.pdf)
+[Package Discovery](https://setuptools.pypa.io/en/latest/userguide/package_discovery.html)
