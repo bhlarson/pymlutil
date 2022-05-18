@@ -83,11 +83,6 @@ def str2bool(v):
 def cmd(command, check=True, shell=True, timeout=None):
     initial = datetime.now()
 
-    if check:
-        result = subprocess.check_call(command, shell=True, timeout=timeout)
-    else:
-        result = subprocess.call(command, shell=True, timeout=timeout)
-
     result = subprocess.run(command, shell=shell, capture_output=True, check=check, timeout=timeout)
 
     dt = (datetime.now()-initial).total_seconds()
