@@ -4,18 +4,6 @@ import yaml
 from setuptools import setup, find_packages
 from pymlutil.version import config, VersionString
 
-
-def ReadDictYaml(filepath):
-    yamldict = {}
-    try:
-        with open(filepath) as yaml_file:
-            yamldict = yaml.safe_load(yaml_file)
-        if not yamldict:
-            print('Failed to load {}'.format(filepath))
-    except ValueError:
-        print('Failed to load {} error {}'.format(filepath, ValueError))
-    return yamldict
-
 version_str = VersionString(config)
 
 from pathlib import Path

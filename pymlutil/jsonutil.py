@@ -82,9 +82,11 @@ def str2bool(v):
 # https://stackoverflow.com/questions/2231227/python-subprocess-popen-with-a-modified-environment
 def cmd(command, check=True, shell=True, timeout=None):
     initial = datetime.now()
-
+    print('$ {}'.format(command))
     result = subprocess.run(command, shell=shell, capture_output=True, check=check, timeout=timeout)
 
     dt = (datetime.now()-initial).total_seconds()
-    print('{}s command {} results {}'.format(dt, command, result))
+    if result.stdout: print(result.stdout.decode("utf-8"))
+    if result.stdout: print(result.stderr.decode("utf-8"))
+    print('result {} in {}s'.format(result.returncode, dt))
     return result.returncode, result.stderr, result.stdout
