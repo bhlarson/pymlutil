@@ -14,7 +14,8 @@ test_config = 'test.yaml'
 
 class Test(unittest.TestCase):
     def test_cmd(self):
-        self.assertEqual(cmd('ls -la', check=True, timeout=5), 0)
+        result, _, _ = cmd('ls -la', check=True, timeout=5)
+        self.assertEqual(result, 0)
 
     def test_yaml(self):
         test = ReadDict(test_config)

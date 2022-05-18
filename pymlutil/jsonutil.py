@@ -87,6 +87,9 @@ def cmd(command, check=True, shell=True, timeout=None):
         result = subprocess.check_call(command, shell=True, timeout=timeout)
     else:
         result = subprocess.call(command, shell=True, timeout=timeout)
+
+    result = subprocess.run(command, shell=shell, capture_output=True, check=check, timeout=timeout)
+
     dt = (datetime.now()-initial).total_seconds()
     print('{}s command {} results {}'.format(dt, command, result))
-    return result
+    return result.returncode, result.stderr, result.stdout
