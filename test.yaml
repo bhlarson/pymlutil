@@ -11,3 +11,8 @@ s3:
   srcpath: tests/testimages
   testset: test
   objectpath: testimages
+
+test_yaml:
+  - zero: 0
+  - one: 1
+  - two: 2

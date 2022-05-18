@@ -27,6 +27,8 @@ plt.show()
 
 ### jsonutil
 
+- cmd(command, check=True, timeout=None): execute subprocess.call prining the execution time and results
+
 ### metrics
 
 ### s3

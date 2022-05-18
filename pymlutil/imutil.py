@@ -3,7 +3,21 @@ import cv2
 
 class ImUtil():
     def __init__(self, dataset_desc, class_dictionary):
+
+        if not type(dataset_desc) is dict:
+            raise TypeError('{} {} dataset_desc must be dictionary'.format(__file__, __name__))
+
         self.dataset_desc = dataset_desc
+
+        if not type(class_dictionary) is dict:
+            raise TypeError('{} {} class_dictionary must be dictionary'.format(__file__, __name__))
+
+        if 'objects' not in class_dictionary:
+            raise TypeError('{} {} class_dictionary["objects"] undefined'.format(__file__, __name__))
+
+        if 'background' not in class_dictionary:
+            raise TypeError('{} {} class_dictionary["background"] undefined'.format(__file__, __name__))
+
         self.class_dictionary = class_dictionary
         self.CreateLut()
 
