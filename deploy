@@ -45,7 +45,7 @@ def Archive(args, config):
     cmd(cmdstr)
 
     cmdstr = 'git diff-index --quiet HEAD --;'
-    result, stderr, stdout = cmd(cmdstr, check=False)
+    result = cmd(cmdstr, check=False)
     if result != 0 and not args.test:
         print ('Changes in working tree.  Please commit before creating a versioned repository.  Run "git status" for more information.')
         return result, config, version_str
