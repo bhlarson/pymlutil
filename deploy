@@ -12,7 +12,7 @@ import time
 from datetime import datetime
 from zipfile import ZipFile
 
-from pymlutil.jsonutil import ReadDict, WriteDict
+from pymlutil.jsonutil import ReadDict, WriteDict, cmd
 from pymlutil.version import VersionString
 
 def parse_arguments():
@@ -31,14 +31,6 @@ def parse_arguments():
 
     args = parser.parse_args()
     return args
-
-def cmd(command, check=True):
-    print('$ '+command)
-    initial = datetime.now()
-    result = subprocess.run(command, shell=True, capture_output=True, check=check)
-    dt = (datetime.now()-initial).total_seconds()
-    print('Complete {}s: {}={}'.format(dt, result, command))
-    return result.returncode, result.stderr, result.stdout
 
 def Archive(args, config):
     result = 0
