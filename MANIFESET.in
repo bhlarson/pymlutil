@@ -1,4 +1,0 @@
-include README.md
-include pymltuil.ipynb
-include LICENSE
-include pymlutil/*.yaml
