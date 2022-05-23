@@ -21,14 +21,16 @@ class s3store:
         self.addresss = address
         self.tls = tls
         urllib3.disable_warnings()
+        retries =urllib3.util.Retry(connect=5, read=4, redirect=5)
+
         if(cert_verify):
             if(cert_path):
                 cert_location = cert_path
             else:
                 cert_location = certifi.where()
-            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=cert_location, timeout=timeout, maxsize=10, block=True)
+            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=cert_location, timeout=timeout, maxsize=10, block=True, retries=retries)
         else:
-            http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=timeout, maxsize=10, block=True)
+            http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=timeout, maxsize=10, block=True, retries=retries)
 
         self.s3 = Minio(address,
              access_key=access_key,

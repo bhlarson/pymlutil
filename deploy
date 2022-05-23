@@ -55,7 +55,7 @@ def Archive(args, config):
     if args.message is None:
         description = "{} version {}".format(config['name'], version_str)
     else:
-        description = args.description
+        description = args.message
     cmdstr = 'git tag -a {} -m "{}"'.format(version_str,description )
     cmd(cmdstr)
 
