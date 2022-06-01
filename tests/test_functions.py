@@ -18,9 +18,9 @@ class Test(unittest.TestCase):
 
     def test_GaussianExponential(self):
         vx = 1
-        vy = 1
-        px = 2
-        py = 2
+        vy = 2
+        px = 3
+        py = 4
         power = 2
         expf =  Exponential(vx=vx, vy=vy, px=px, py=py, power=power)
         x = np.arange(vx-1, px+1, 0.1)  

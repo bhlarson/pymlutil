@@ -33,6 +33,6 @@ class Exponential():
 
         y = np.piecewise(x, 
             [x < self.vx, x > self.px], 
-            [self.vy, self.px, lambda x : self.a*pow(x-self.vx,self.power) + self.vy]) 
+            [self.vy, self.py, lambda x : self.a*pow(x-self.vx,self.power) + self.vy]) 
 
         return y
