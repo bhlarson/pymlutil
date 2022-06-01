@@ -30,11 +30,9 @@ class Exponential():
         else:
             self.a = (py-vy)/np.power(px-vx,self.power)
     def f(self, x):
-        if x < self.vx:
-            y = self.vy
-        elif x > self.px:
-            y = self.py
-        else:
-            dx = x-self.vx
-            y = self.a*np.power(x-self.vx,self.power) + self.vy
+
+        y = np.piecewise(x, 
+            [x < self.vx, x > self.px], 
+            [self.vy, self.px, lambda x : self.a*pow(x-self.vx,self.power) + self.vy]) 
+
         return y
