@@ -6,6 +6,8 @@ import json
 from collections import defaultdict
 import unittest
 import torch
+import tempfile
+from filecmp import dircmp
 
 sys.path.insert(0, os.path.abspath('')) # Test files from current path rather than installed module
 from pymlutil.s3 import *
@@ -39,6 +41,44 @@ class Test(unittest.TestCase):
         #  RemoveObjects(self, bucket, setname=None, pattern='**', recursive=False):
         if not s3.RemoveObjects(set['bucket'], destobjpath, recursive=True):
             raise ValueError('{} {} RemoveObjects({}, {}, recursive={}) failed'.format(__file__, __name__, set['bucket'], destobjpath, recursive=True))
+
+    def test_GitDir(self):
+
+        parameters = ReadDict(test_config)
+        if 's3' not in parameters:
+            raise ValueError('s3 not in {}'.format(test_config))
+
+        s3, _, s3def = Connect(parameters['s3']['credentials'])
+
+        set = None
+        if parameters['s3']['testset'] in s3def['sets']:
+            set = s3def['sets'][parameters['s3']['testset']]
+        else:
+            raise ValueError('{} {} clone set undefined {}'.format(__file__, __name__, parameters['s3']['testset']))
+
+        destobjpath = set['prefix']
+        if destobjpath is not None and len(destobjpath) > 0:
+            destobjpath += '/'
+        destobjpath += parameters['s3']['objectpath']
+
+        if not (s3.PutDir(set['bucket'], parameters['s3']['srcpath'], destobjpath)):
+             raise ValueError('{} {} failed'.format(__file__, __name__))
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            if not (s3.GetDir(set['bucket'], destobjpath, tmpdirname)):
+                raise ValueError('{} {} failed'.format(__file__, __name__))
+
+            infiles = os.listdir(parameters['s3']['srcpath'])
+            outfiles = os.listdir(tmpdirname)
+
+            dcmp = dircmp(parameters['s3']['srcpath'], tmpdirname)
+            assert(len(dcmp.diff_files)==0)
+            
+
+        #  RemoveObjects(self, bucket, setname=None, pattern='**', recursive=False):
+        if not s3.RemoveObjects(set['bucket'], destobjpath, recursive=True):
+            raise ValueError('{} {} RemoveObjects({}, {}, recursive={}) failed'.format(__file__, __name__, set['bucket'], destobjpath, recursive=True))
+
 
     # def CloneObjects(self, destbucket, destsetname, srcS3, srcbucket, srcsetname):
     def test_CloneObjects(self):

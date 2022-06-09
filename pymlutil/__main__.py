@@ -15,9 +15,10 @@ def parse_arguments():
     parser.add_argument('-credentials', type=str, default='creds.yaml', help='Credentials file.')
 
     parser.add_argument('-src', type=str, default=None, help='source path')
-    parser.add_argument('-dest', type=str, default=None, help='destindation path')
+    parser.add_argument('-dest', type=str, default=None, help='destination path')
 
-    parser.add_argument('--PutDir', '-p', action='store_true',help='Put directory in S3') 
+    parser.add_argument('--putdir', '-p', action='store_true',help='Put directory in S3') 
+    parser.add_argument('--getdir', '-g', action='store_true',help='Get directory from S3') 
     parser.add_argument('-set', type=str, default='dataset', help='set defined in credentials file')
 
     parser.add_argument('-clone', action='store_true',help='Clone objects from source to destination S3')
@@ -31,17 +32,29 @@ def parse_arguments():
 
 def main(args):
 
-    if args.PutDir:
+    if args.putdir:
         s3, creds, s3def = Connect(args.credentials)
         if args.set not in s3def['sets']:
-            print('PutDir failed: args.set {} not found in credentials file'.format(args.set))
+            print('putdir failed: args.set {} not found in credentials file'.format(args.set))
         elif args.src is None:
-            print('PutDir failed: args.src is None')
+            print('putdir failed: args.src is None')
         elif args.dest is None:
-            print('PutDir failed: args.dest is None')
+            print('putdir failed: args.dest is None')
         else:
             dest = '{}/{}'.format(s3def['sets'][args.set]['prefix'], args.dest)
             s3.PutDir(s3def['sets'][args.set]['bucket'], args.src, dest)
+
+    if args.gitdir:
+        s3, creds, s3def = Connect(args.credentials)
+        if args.set not in s3def['sets']:
+            print('gitdir failed: args.set {} not found in credentials file'.format(args.set))
+        elif args.src is None:
+            print('gitdir failed: args.src is None')
+        elif args.dest is None:
+            print('gitdir failed: args.dest is None')
+        else:
+            src = '{}/{}'.format(s3def['sets'][args.set]['prefix'], args.src)
+            s3.GitDir(s3def['sets'][args.set]['bucket'], src, args.dest)
 
     if args.clone:
         s3Src, _, s3SrcDef = Connect(args.credentials, s3_name=args.srcS3)
