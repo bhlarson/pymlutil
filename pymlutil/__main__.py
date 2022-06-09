@@ -44,17 +44,17 @@ def main(args):
             dest = '{}/{}'.format(s3def['sets'][args.set]['prefix'], args.dest)
             s3.PutDir(s3def['sets'][args.set]['bucket'], args.src, dest)
 
-    if args.gitdir:
+    if args.getdir:
         s3, creds, s3def = Connect(args.credentials)
         if args.set not in s3def['sets']:
-            print('gitdir failed: args.set {} not found in credentials file'.format(args.set))
+            print('getdir failed: args.set {} not found in credentials file'.format(args.set))
         elif args.src is None:
-            print('gitdir failed: args.src is None')
+            print('getdir failed: args.src is None')
         elif args.dest is None:
-            print('gitdir failed: args.dest is None')
+            print('getdir failed: args.dest is None')
         else:
             src = '{}/{}'.format(s3def['sets'][args.set]['prefix'], args.src)
-            s3.GitDir(s3def['sets'][args.set]['bucket'], src, args.dest)
+            s3.GetDir(s3def['sets'][args.set]['bucket'], src, args.dest)
 
     if args.clone:
         s3Src, _, s3SrcDef = Connect(args.credentials, s3_name=args.srcS3)
