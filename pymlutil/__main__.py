@@ -3,7 +3,7 @@ import os
 
 from .s3 import *
 from .jsonutil import *
-from pymlutil.imutil import ImUtil, ImTransform
+from .imutil import ImUtil, ImTransform
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Process arguments')
@@ -27,11 +27,13 @@ def parse_arguments():
     parser.add_argument('-destS3', type=str, default=None, help='path to source directory')
     parser.add_argument('-destSet', type=str, default='dataset', help='set defined in credentials file')
 
+    parser.add_argument('--version_str', '-v' type=str, default=None, help='version in config file')
+
     args = parser.parse_args()
     return args
 
 def main(args):
-
+    result = 0
     if args.putdir:
         s3, creds, s3def = Connect(args.credentials)
         if args.set not in s3def['sets']:
@@ -74,8 +76,13 @@ def main(args):
 
         s3Dest.CloneObjects(destSet['bucket'], args.dest , s3Src, srcSet['bucket'], args.src)
 
-    print('pymluitil complete')
+    if args.version_str is not None:
+        from .version import VersionString
+        config = ReadDict(args.version_str)
+        result = VersionString(config)
 
+    print('pymluitil complete')
+    return result
     
 if __name__ == '__main__':
     import argparse
@@ -89,4 +96,4 @@ if __name__ == '__main__':
         debugpy.wait_for_client()  # Pause the program until a remote debugger is attached
         print("Debugger attached")
 
-    main(args)
+    result = main(args)

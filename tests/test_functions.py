@@ -28,6 +28,11 @@ class Test(unittest.TestCase):
         assert(y[0] == vy)
         assert(y[-1] == py)
 
+    def test_Sigmoid(self):
+        scale = 1.0
+        offset = 0.0
+        y = Sigmoid(0.0, scale = scale, offset=offset, k_exp = 0.1)
+        self.assertAlmostEqual(y,  scale/2.0)
 
 
 if __name__ == '__main__':

@@ -15,6 +15,7 @@ def NormGausBasis(len, i, depth, r=1.0):
             den = den + bias
         return num/den
 
+
 # Exponential function from vertex and point
 class Exponential():
     def __init__(self,vx=0.0, vy=0.0, px=1.0, py=1.0, power=2.0):
@@ -36,3 +37,7 @@ class Exponential():
             [self.vy, self.py, lambda x : self.a*pow(x-self.vx,self.power) + self.vy]) 
 
         return y
+
+def Sigmoid(x, scale = 1.0, offset=0.0, k_exp = 0.1):
+    sigmoid = scale/(1.0+np.exp(-1*k_exp*(x-offset)))
+    return sigmoid
