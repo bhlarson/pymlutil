@@ -5,11 +5,11 @@ import numpy as np
 def GaussianBasis(x, zero=0.0, sigma=0.33):
     return torch.exp(-1*torch.square((x-zero)/(2*sigma*sigma))) # torch.square not supported by torch.onnx
 
-def NormGausBasis(len, i, depth, r=1.0):
+def NormGausBasis(len, i, zero, sigma=1.0):
         den = 0.0
         num = 0.0
         for j in range(len):
-            bias = GaussianBasis(j,depth,r)
+            bias = GaussianBasis(j,zero,sigma)
             if j==i:
                 num=bias
             den = den + bias
