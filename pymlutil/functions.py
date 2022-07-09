@@ -38,6 +38,6 @@ class Exponential():
 
         return y
 
-def Sigmoid(x, scale = 1.0, offset=0.0, k_exp = 0.1):
+def Sigmoid(x, scale = 1.0, offset=0.0, k_exp = 1.0):
     sigmoid = scale/(1.0+np.exp(-1*k_exp*(x-offset)))
     return sigmoid
