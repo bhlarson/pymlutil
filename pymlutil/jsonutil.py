@@ -83,7 +83,7 @@ def str2bool(v):
 def cmd(command, check=True, shell=True, timeout=None):
     initial = datetime.now()
     print('$ {}'.format(command))
-    result = subprocess.run(command, shell=shell, capture_output=True, check=check, timeout=timeout)
+    result = subprocess.run(command, shell=shell, check=check, timeout=timeout)
 
     dt = (datetime.now()-initial).total_seconds()
     if result.stdout: print(result.stdout.decode("utf-8"))
