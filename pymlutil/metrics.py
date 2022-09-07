@@ -127,7 +127,7 @@ def MergeImAnSeg(img, ann, seg, lut, mean=None, stdev=None, ann_text='Label', se
 class DatasetResults:
     # imgSave: save image to path defined in imgSave
     # imRecord: recorde image in results
-    def __init__(self, class_dictionary, batch_size=1, imStatistics=False, imgSave=None, imRecord=False, task='segmentation', timetrial = False):
+    def __init__(self, class_dictionary, batch_size=1, imStatistics=False, imgSave=None, imRecord=False, task='segmentation'):
         # Prepare datasets for similarity computation
         self.class_dictionary = class_dictionary
         self.batch_size = batch_size
@@ -135,8 +135,6 @@ class DatasetResults:
         self.imgSave = imgSave
         self.imRecord = imRecord
         self.task = task
-        self.timetrial = timetrial
-        self.num_images = 0
 
         # Process inputs for evaluation
         self.classSimilarity = {}
@@ -171,49 +169,39 @@ class DatasetResults:
         self.lut = self.lut.astype(float) * 1/255. # scale colors 0-1
         self.lut[self.class_dictionary ['background']] = [1.0,1.0,1.0] # Pass Through
 
-    def infer_results(self, iBatch, dt, images=[], labels=[], segmentations=[], mean=[], stdev=[]):
+    def infer_results(self, iBatch, images, labels, segmentations, mean, stdev, dt):
         self.dtSum += dt
+        numImages = len(images)
+        dtImage = dt/numImages
+        for j in range(numImages):
 
-        if self.timetrial:
-            self.num_images += self.batch_size
-        else:
-            numImages = len(images)
-            dtImage = dt/self.batch_size
+            result = {'dt':dtImage}
 
-            for j in range(numImages):
+            if self.imgSave is not None or self.imRecord:
+                imanseg = MergeImAnSeg(images[j], labels[j], segmentations[j], self.lut, mean[j], stdev[j])
+                if self.imgSave is not None:
+                    savename = '{}/{}{:04d}.png'.format(self.imgSave, self.task, self.batch_size*iBatch+j)
+                    cv2.imwrite(savename, imanseg)
+                if self.imRecord:
+                    result['image'] = imanseg
 
-                result = {'dt':dtImage}
+            result['similarity'], self.classSimilarity, unique = jaccard(labels[j], segmentations[j], self.objTypes, self.classSimilarity)
 
-                if self.imgSave is not None or self.imRecord:
-                    imanseg = MergeImAnSeg(images[j], labels[j], segmentations[j], self.lut, mean[j], stdev[j])
-                    if self.imgSave is not None:
-                        savename = '{}/{}{:04d}.png'.format(self.imgSave, self.task, self.batch_size*iBatch+j)
-                        cv2.imwrite(savename, imanseg)
-                    if self.imRecord:
-                        result['image'] = imanseg
+            confusion = confusion_matrix(labels[j].flatten(),segmentations[j].flatten(), labels=self.confusion_labels)
+            if self.totalConfusion is None:
+                self.totalConfusion = confusion
+            else:
+                self.totalConfusion += confusion
 
-                result['similarity'], self.classSimilarity, unique = jaccard(labels[j], segmentations[j], self.objTypes, self.classSimilarity)
+            result['confusion'] = confusion.tolist()
 
-                confusion = confusion_matrix(labels[j].flatten(),segmentations[j].flatten(), labels=self.confusion_labels)
-                if self.totalConfusion is None:
-                    self.totalConfusion = confusion
-                else:
-                    self.totalConfusion += confusion
-
-                result['confusion'] = confusion.tolist()
-
-                self.images.append(result)
+            self.images.append(result)
 
         return self.totalConfusion
 
     def Results(self):
 
         dataset_similarity = {}
-
-        if self.timetrial:
-            num_images = self.num_images 
-        else:
-            num_images = len(self.images)
 
         num_images = len(self.images)
         average_time = self.dtSum/num_images
