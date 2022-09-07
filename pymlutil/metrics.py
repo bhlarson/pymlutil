@@ -171,7 +171,7 @@ class DatasetResults:
         self.lut = self.lut.astype(float) * 1/255. # scale colors 0-1
         self.lut[self.class_dictionary ['background']] = [1.0,1.0,1.0] # Pass Through
 
-    def infer_results(self, iBatch, dt, images=[], labels, segmentations=[], mean=[], stdev=[]):
+    def infer_results(self, iBatch, dt, images=[], labels=[], segmentations=[], mean=[], stdev=[]):
         self.dtSum += dt
 
         if self.timetrial:
