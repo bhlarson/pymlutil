@@ -90,9 +90,8 @@ def main(args):
     cmdstr = "python3 setup.py sdist bdist_wheel"
     cmd(cmdstr)
 
-    #cmdstr = "twine upload dist/* -u {} -p {}".format(creds['pypi.org']['username'], creds['pipy.org']['password'])
-    pipy_creds = next(filter(lambda d: d.get('package') == args.package, creds['pypi.org']), None)
-    cmdstr = "twine upload dist/* -u {} -p {}".format(pipy_creds['username'], pipy_creds['password'])
+    pypi_creds = next(filter(lambda d: d.get('package') == args.package, creds['pypi']), None)
+    cmdstr = "twine upload dist/* -u {} -p {}".format(pypi_creds['username'], pypi_creds['password'])
     cmd(cmdstr)
 
     is_new_version_loaded = False
@@ -102,7 +101,7 @@ def main(args):
         cmd(cmdstr)
 
         cmdstr = 'python3 -c "import sys; from {}.version import __version__; sys.exit(__version__)"'.format(config['name'])
-        _, loaded_version, _ = cmd(cmdstr, check=False)
+        _, loaded_version, _ = cmd(cmdstr, check=False, capture_output=True)
         loaded_str = loaded_version.decode("utf-8").replace("\n", "")
         if loaded_str==version_str:
             is_new_version_loaded = True

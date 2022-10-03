@@ -68,7 +68,7 @@ class ImUtil():
         im = cv2.hconcat([iman, imseg])
         return im
 
-class ImTransform():
+class ImTransform(object):
     def __init__(self, 
         height=640, 
         width=640, 
@@ -189,3 +189,10 @@ class ImTransform():
             ann = ann[startY:startY+self.height, startX:startX+self.width]
 
         return img, ann, imgMean, imgStd
+
+    def __call__(self, image, target):
+        image, target, mean, std = self.random_resize_crop_or_pad(image, target)
+        return image, target, mean, std
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(image, target)'

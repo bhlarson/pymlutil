@@ -73,7 +73,7 @@ class s3store:
             self.MakeBucket(bucket)
             if path[len(path)-1] != '/':
                 path = path +'/'
-            for file in tqdm(files, total=len(files), desc="PutDir"):
+            for file in tqdm(files, total=len(files), desc="PutDir {}".format(setname)):
                 # Create object directory structure
                 if file.is_file():
                     object_name = setname+ remove_prefix(str(file), str(Path(path)))
@@ -93,7 +93,7 @@ class s3store:
             fileCount = len(tuple(objects))
             if(fileCount > 0):
                 objects = self.s3.list_objects(bucket, prefix=setname, recursive=True) # Recreate object to reset iteratorator to beginning
-                for obj in tqdm(objects, total=fileCount):
+                for obj in tqdm(objects, total=fileCount, desc="GetDir {}/{}".format(bucket,setname)):
                     try:
                         
                         destination = '{}/{}'.format(destdir,remove_prefix(obj.object_name, setname))
@@ -351,7 +351,7 @@ class s3store:
         try:
             objects = srcS3.ListObjects(srcbucket, setname=srcsetname, pattern=srcpattern, recursive=recursive)
 
-            for obj in tqdm(objects):
+            for obj in tqdm(objects, desc="CloneObjects {}/{}".format(srcbucket,srcsetname)):
                 try:
                     destination = destsetname
                     if type(srcsetname) == str and len(srcsetname) > 0:
