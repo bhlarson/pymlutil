@@ -17,7 +17,7 @@ def remove_prefix(text, prefix):
 
 class s3store:
 
-    def __init__(self, address, access_key, secret_key, tls = True, cert_verify=True, cert_path = None, timeout=5.0):
+    def __init__(self, address, access_key, secret_key, tls = False, cert_verify=True, cert_path = None, timeout=5.0):
         self.addresss = address
         self.tls = tls
         urllib3.disable_warnings()
@@ -28,9 +28,9 @@ class s3store:
                 cert_location = cert_path
             else:
                 cert_location = certifi.where()
-            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=cert_location, timeout=timeout, maxsize=10, block=True, retries=retries)
+            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=cert_location, timeout=timeout, maxsize=10, retries=retries)
         else:
-            http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=timeout, maxsize=10, block=True, retries=retries)
+            http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=timeout, maxsize=10, retries=retries)
 
         self.s3 = Minio(address,
              access_key=access_key,
