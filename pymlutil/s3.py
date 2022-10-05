@@ -17,11 +17,11 @@ def remove_prefix(text, prefix):
 
 class s3store:
 
-    def __init__(self, address, access_key, secret_key, tls = False, cert_verify=True, cert_path = None, timeout=5.0):
+    def __init__(self, address, access_key, secret_key, tls = False, cert_verify=True, cert_path = None, timeout=25.0):
         self.addresss = address
         self.tls = tls
         urllib3.disable_warnings()
-        retries =urllib3.util.Retry(connect=5, read=4, redirect=5)
+        retries =urllib3.util.Retry(connect=10, read=10, redirect=10, backoff_factor=0.1)
 
         if(cert_verify):
             if(cert_path):
