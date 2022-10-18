@@ -17,20 +17,20 @@ def remove_prefix(text, prefix):
 
 class s3store:
 
-    def __init__(self, address, access_key, secret_key, tls = True, cert_verify=True, cert_path = None, timeout=5.0):
+    def __init__(self, address, access_key, secret_key, tls = False, cert_verify=True, cert_path = None, timeout=25.0):
         self.addresss = address
         self.tls = tls
         urllib3.disable_warnings()
-        retries =urllib3.util.Retry(connect=5, read=4, redirect=5)
+        retries =urllib3.util.Retry(connect=10, read=10, redirect=10, backoff_factor=0.1)
 
         if(cert_verify):
             if(cert_path):
                 cert_location = cert_path
             else:
                 cert_location = certifi.where()
-            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=cert_location, timeout=timeout, maxsize=10, block=True, retries=retries)
+            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=cert_location, timeout=timeout, maxsize=10, retries=retries)
         else:
-            http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=timeout, maxsize=10, block=True, retries=retries)
+            http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=timeout, maxsize=10, retries=retries)
 
         self.s3 = Minio(address,
              access_key=access_key,
