@@ -196,3 +196,52 @@ class ImTransform(object):
 
     def __repr__(self):
         return self.__class__.__name__ + '(image, target)'
+
+class AddGaussianNoise(object):
+    def __init__(self, mean=0., std=1.):
+        self.std = std
+        self.mean = mean
+        
+    def __call__(self, tensor):
+        rand_std = random.uniform(0, self.std)
+        return tensor + torch.randn(tensor.size()) * rand_std + self.mean
+    
+    def __repr__(self):
+        return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)
+
+class ResizePad(object):
+    def __init__(self, width, height):
+        assert(width > 0)
+        assert(height > 0)
+        self.width = width
+        self.height = height
+        
+    def __call__(self, tensor):
+        width = tensor.width
+        height = tensor.height
+        dw = self.width/width
+        dh = self.height/height
+        if dw == dh:
+            size =  (self.height, self.width)
+            padding = None
+        elif dw > dh: # Use height scale factor
+            size =  (self.height, int(width*dh))
+            left = int((self.width-size[1])/2)
+            right = self.width-size[1]-left
+            padding = (left, 0, right, 0)
+
+        else: # Use width scale factor
+            size =  (int(height*dw), self.width)
+            top = int((self.height-size[0])/2)
+            bottom = self.height-size[0]-top
+            padding = (0, top, 0, bottom)
+
+        tensor = transforms.functional.resize(tensor, size)
+        if padding is not None:
+            tensor = transforms.functional.pad(tensor, padding)
+
+
+        return tensor
+    
+    def __repr__(self):
+        return self.__class__.__name__ + '(width_max={}, height_max={})'.format(self.width_max, self.height_max)
