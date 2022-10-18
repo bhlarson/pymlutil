@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import random
 
 class ImUtil():
     def __init__(self, dataset_desc, class_dictionary):
