@@ -1,7 +1,9 @@
 import copy
 import numpy as np
 import cv2
-from sklearn.metrics import confusion_matrix
+import pandas as pd
+from sklearn.metrics import confusion_matrix, jaccard_score
+import os
 
 def similarity(intersection, union):
     if union > 0:
@@ -21,7 +23,6 @@ def jaccard(annotation, segmentation, iTypes, typeSimilarity):
     unique = np.append(unique,np.unique(segmentation))
     unique = np.unique(unique)
 
-    #print(unique)
 
     for i in unique:
         if i in iTypes:
@@ -176,18 +177,11 @@ class DatasetResults:
         for j in range(numImages):
 
             result = {'dt':dtImage}
-
-            if self.imgSave is not None or self.imRecord:
-                imanseg = MergeImAnSeg(images[j], labels[j], segmentations[j], self.lut, mean[j], stdev[j])
-                if self.imgSave is not None:
-                    savename = '{}/{}{:04d}.png'.format(self.imgSave, self.task, self.batch_size*iBatch+j)
-                    cv2.imwrite(savename, imanseg)
-                if self.imRecord:
-                    result['image'] = imanseg
-
             result['similarity'], self.classSimilarity, unique = jaccard(labels[j], segmentations[j], self.objTypes, self.classSimilarity)
 
             confusion = confusion_matrix(labels[j].flatten(),segmentations[j].flatten(), labels=self.confusion_labels)
+            iou = jaccard_score(labels[j].flatten(),segmentations[j].flatten(), average='macro')
+
             if self.totalConfusion is None:
                 self.totalConfusion = confusion
             else:
@@ -195,9 +189,33 @@ class DatasetResults:
 
             result['confusion'] = confusion.tolist()
 
+            if self.imgSave is not None or self.imRecord:
+                imanseg = MergeImAnSeg(images[j], labels[j], segmentations[j], self.lut, mean[j], stdev[j])
+                if self.imgSave is not None:
+                    os.makedirs(self.imgSave, exist_ok=True)
+                    savename = '{}/{}{:04d}_{:03f}.png'.format(self.imgSave, self.task, self.batch_size*iBatch+j, iou)
+                    cv2.imwrite(savename, imanseg)
+                if self.imRecord:
+                    result['image'] = imanseg
+
             self.images.append(result)
 
         return self.totalConfusion
+
+    def save_555(self):
+
+        if self.imRecord:
+            metrics = [{k: v for k, v in d.iteritems() if k != 'image'} for d in self.images]
+            df = pd.DataFrame(metrics)
+
+            # sort df by similarity score
+            # get indexes of top5, middle5 and bottom5 images
+            # save images of with similarity scores
+
+            df = df.sort_values(by='similarity')
+
+        else:
+            raise
 
     def Results(self):
 
