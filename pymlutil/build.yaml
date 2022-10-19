@@ -2,6 +2,6 @@ name: pymlutil
 description: Python Machine Learning Utilities
 version:
   major: 0
-  minor: 0
-  patch: 135
+  minor: 1
+  patch: 5
   label: ''
