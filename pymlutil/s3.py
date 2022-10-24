@@ -235,7 +235,7 @@ class s3store:
             self.MakeBucket(bucket)
             ext = os.path.splitext(object_name)[1]
             if ext=='.yaml':
-                obj = yaml.dump(dict_data, indent=2, sort_keys=False)
+                obj = yaml.dump(dict_data, indent=2, sort_keys=False).encode()
             elif ext=='.json':
                 obj = json.dumps(dict_data, sort_keys=False, indent=4).encode()
             else:
