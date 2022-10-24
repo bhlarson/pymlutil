@@ -233,10 +233,19 @@ class s3store:
         # List all object paths in bucket that begin with my-prefixname.
         try:
             self.MakeBucket(bucket)
-            obj = json.dumps(dict_data, sort_keys=False, indent=4).encode()
+            ext = os.path.splitext(filepath)[1]
+            if ext=='.yaml':
+                yamlStr = yaml.dump(dict_data, indent=2, sort_keys=False)
+            elif ext=='.json':
+                obj = json.dumps(dict_data, sort_keys=False, indent=4).encode()
+            else:
+                obj = None
+                print('Unexpected file type {}'.format(ext))
+                success = False
 
-            objStream = io.BytesIO(obj)
-            self.s3.put_object(bucket, object_name, objStream, length=len(obj))
+            if obj is not None:
+                objStream = io.BytesIO(obj)
+                self.s3.put_object(bucket, object_name, objStream, length=len(obj))
         except Exception as err:
             print(err)
             success = False
