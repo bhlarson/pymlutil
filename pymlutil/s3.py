@@ -233,7 +233,7 @@ class s3store:
         # List all object paths in bucket that begin with my-prefixname.
         try:
             self.MakeBucket(bucket)
-            ext = os.path.splitext(filepath)[1]
+            ext = os.path.splitext(object_name)[1]
             if ext=='.yaml':
                 yamlStr = yaml.dump(dict_data, indent=2, sort_keys=False)
             elif ext=='.json':
