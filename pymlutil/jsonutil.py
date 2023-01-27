@@ -52,6 +52,8 @@ def WriteDictYaml(outdict, path):
     return True
 
 def ReadDict(filepath):
+    if filepath[0] == '~':
+        filepath = os.path.expanduser(filepath)
     ext = os.path.splitext(filepath)[1]
     if ext=='.yaml':
         readDict = ReadDictYaml(filepath)
@@ -62,6 +64,8 @@ def ReadDict(filepath):
     return readDict
 
 def WriteDict(outdict, filepath):
+    if filepath[0] == '~':
+        filepath = os.path.expanduser(filepath)
     ext = os.path.splitext(filepath)[1]
     if ext=='.yaml':
         readDict = WriteDictYaml(outdict, filepath)
