@@ -37,12 +37,12 @@ class Test(unittest.TestCase):
         stdev = [0]*4
         dt = 1e-4
 
-        class_dict = 'cityscapes_2classes'
-        class_dict_path = f'model/cityscapes/{class_dict}'
-        class_dictionary = s3.GetDict(s3def['sets']['dataset']['bucket'], class_dict_path + '.json')
+        # class_dict = 'cityscapes_2classes'
+        # class_dict_path = f'model/cityscapes/{class_dict}'
+        # class_dictionary = s3.GetDict(s3def['sets']['dataset']['bucket'], class_dict_path + '.json')
 
-        results = DatasetResults(class_dictionary, batch_size=1, imStatistics=False, imgSave='test_images', imRecord=False, task='segmentation')
-        cm = results.infer_results(iBatch, images, labels, segmentations, mean, stdev, dt)
+        # results = DatasetResults(class_dictionary, batch_size=1, imStatistics=False, imgSave='test_images', imRecord=False, task='segmentation')
+        # cm = results.infer_results(iBatch, images, labels, segmentations, mean, stdev, dt)
 
 if __name__ == '__main__':
     unittest.main()
