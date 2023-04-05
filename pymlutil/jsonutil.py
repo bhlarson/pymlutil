@@ -22,8 +22,9 @@ def ReadDictJson(filepath):
             jsondict = json.load(json_file)
         if not jsondict:
             print('Failed to load {}'.format(filepath))
-    except:
-        print('Failed to load {}'.format(filepath))
+    except Exception as err:
+        print("Exception {}: ReadDictJson failed to load {}.  {}".format(type(err), filepath, err))
+        raise err
     return jsondict
 
 def Dict2Json(outdict):
@@ -41,8 +42,9 @@ def ReadDictYaml(filepath):
             yamldict = yaml.safe_load(yaml_file)
         if not yamldict:
             print('Failed to load {}'.format(filepath))
-    except ValueError:
-        print('Failed to load {} error {}'.format(filepath, ValueError))
+    except Exception as err:
+        print("Exception {}: ReadDictYaml failed to load {}.  {}".format(type(err), filepath, err))
+        raise err
     return yamldict
 
 def WriteDictYaml(outdict, path):
